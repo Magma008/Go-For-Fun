@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom'
-import EntryPage from './pages/Entry Page/EntryPage'
+import EntryPage from './pages/entryPage/EntryPage'
 import PlayerProfile from './pages/playerProfile/PlayerProfile'
 import OrganizerProfile from './pages/organizerProfile/OrganizerProfile'
 
