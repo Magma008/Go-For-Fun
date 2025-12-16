@@ -2,7 +2,8 @@ import React from 'react'
 import { Route, Routes } from 'react-router-dom'
 import EntryPage from './pages/entryPage/EntryPage'
 import PlayerProfile from './pages/playerProfile/PlayerProfile'
-import OrganizerProfile from './pages/organizerProfile/OrganizerProfile'
+import SignUp from './pages/signUp/SignUp'
+import Login from './pages/login/Login'
 
 const App = () => {
   return (
@@ -10,7 +11,8 @@ const App = () => {
       <Routes>
         <Route path='/' element={<EntryPage/>} />
         <Route path='/player-profile' element={<PlayerProfile/>} />
-        <Route path='/organizer-profile' element={<OrganizerProfile/>} />
+        <Route path='/signup' element={<SignUp />} />
+        <Route path='/login' element={<Login/>} />
       </Routes>
     </div>
   )
