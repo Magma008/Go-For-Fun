@@ -64,7 +64,7 @@ const SignUp = () => {
             theme: "colored",
             transition: Slide,
         });
-
+        navigate("/login")
     }
 
     return (
