@@ -2,12 +2,15 @@ import { Switch } from "@mui/material";
 import { useEffect, useState } from "react";
 import { BsQuestionCircle } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
+import { FaUsersGear } from "react-icons/fa6";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { IoSettingsOutline } from "react-icons/io5";
 import { LuLogOut, LuUser } from "react-icons/lu";
 import { RiSettings3Line } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
+const Player = () => {
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(
     localStorage.getItem("dark_mode") === "false" ? false : true
   );
@@ -15,18 +18,19 @@ const Profile = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [phone, setPhone] = useState(localStorage.getItem("user_phone") || "");
+  const [position, setPosition] = useState(localStorage.getItem("user_position") || "Mid");
+  const [nationality, setNationality] = useState(localStorage.getItem("user_nationality") || "-");
+
+  const [isEditingPhone, setIsEditingPhone] = useState(false);
   useEffect(() => {
     localStorage.setItem("dark_mode", darkMode);
   }, [darkMode]);
   useEffect(() => {
     if (!window.Telegram?.WebApp) return;
-
     const tg = window.Telegram.WebApp;
     tg.ready();
-
     const u = tg.initDataUnsafe?.user;
     if (!u) return;
-
     setUser({
       id: u.id,
       first_name: u.first_name,
@@ -35,25 +39,42 @@ const Profile = () => {
       photo: u.photo_url,
     });
   }, []);
-
-  const handlePhoneChange = (e) => {
-    const value = e.target.value;
-    setPhone(value);
-    localStorage.setItem("user_phone", value);
+  const handleSavePhone = () => {
+    localStorage.setItem("user_phone", phone);
+    setIsEditingPhone(false);
   };
-
+  const handleChangePosition = (e) => {
+    setPosition(e.target.value);
+    localStorage.setItem("user_position", e.target.value);
+  };
+  const handleChangeNationality = (e) => {
+    setNationality(e.target.value);
+    localStorage.setItem("user_nationality", e.target.value);
+  };
   const handleLogout = () => {
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.close();
     }
   };
 
+  const navHandler = async (e) => {
+    e.preventDefault();
+
+    const data = await JSON.parse(localStorage.getItem("userData"));
+
+    if (data) {
+      navigate("/login")
+    } else {
+      navigate("/signup")
+    }
+
+  }
+
   return (
     <section
       className="w-full min-h-screen transition-colors duration-300 pb-10 overflow-x-hidden"
       style={{ backgroundColor: darkMode ? "#171717" : "#ffffff" }}
     >
-      {/* PROFILE CARD */}
       <div className="flex justify-center pt-20 px-4">
         <div className="w-full max-w-md bg-gradient-to-br from-orange-400 via-orange-500 to-orange-400 rounded-4xl">
           <div className="flex items-end justify-center relative -top-14">
@@ -73,16 +94,14 @@ const Profile = () => {
           </div>
 
           <div className="text-center text-white text-[26px] font-bold relative -top-10">
-            {user
-              ? `${user.first_name || ""} ${user.last_name || ""}`
-              : "Guest"}
+            {user ? `${user.first_name || ""} ${user.last_name || ""}` : "Guest"}
           </div>
 
           <div className="grid grid-cols-3 gap-2 px-4 pb-4 relative -top-5">
             {[
               ["Phone", phone || "-"],
-              ["Position", "Mid"],
-              ["Nationality", "-"],
+              ["Position", position],
+              ["Nationality", nationality],
               ["Games", "0"],
               ["Won", "0"],
               ["Lost", "0"],
@@ -92,7 +111,7 @@ const Profile = () => {
                 className="bg-amber-300/30 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-white text-[13px] h-14"
               >
                 <p>{label}</p>
-                <span className="font-semibold">{value}</span>
+                <span className="font-semibold truncate w-full text-center px-1">{value}</span>
               </div>
             ))}
           </div>
@@ -100,48 +119,30 @@ const Profile = () => {
       </div>
       <div className="max-w-md mx-auto space-y-5 mt-4">
         <div className="px-4">
-          <span
-            className={`text-lg font-medium ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <span className={`text-lg font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
             Account
           </span>
 
           <div
             onClick={() => setIsProfileOpen(true)}
-            className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg cursor-pointer ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
+            className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg cursor-pointer ${darkMode ? "text-white" : "text-gray-800"}`}
           >
             <LuUser size={18} />
             <span>Profile Info</span>
           </div>
 
-          <div
-            className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <div className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
             <IoSettingsOutline size={18} />
             <span>Settings</span>
           </div>
         </div>
 
         <div className="px-4">
-          <span
-            className={`text-lg font-medium ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <span className={`text-lg font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
             Preferences
           </span>
 
-          <div
-            className={`mt-3 h-14 flex justify-between items-center border-2 border-orange-500 px-3 rounded-lg ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <div className={`mt-3 h-14 flex justify-between items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
             <div className="flex gap-4 items-center">
               <RiSettings3Line size={20} />
               <span>Dark Mode</span>
@@ -154,11 +155,7 @@ const Profile = () => {
             />
           </div>
 
-          <div
-            className={`mt-3 h-14 flex justify-between items-center border-2 border-orange-500 px-3 rounded-lg ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <div className={`mt-3 h-14 flex justify-between items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
             <div className="flex gap-4 items-center">
               <IoIosNotificationsOutline size={24} />
               <span>Notifications</span>
@@ -173,40 +170,33 @@ const Profile = () => {
         </div>
 
         <div className="px-4">
-          <span
-            className={`text-lg font-medium ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <span className={`text-lg font-medium ${darkMode ? "text-white" : "text-gray-800"}`}>
             More
           </span>
 
-          <div
-            className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <div className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
             <FaRegComment size={18} />
             <span>Live Support</span>
           </div>
 
-          <div
-            className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${
-              darkMode ? "text-white" : "text-gray-800"
-            }`}
-          >
+          <div className={`mt-3 h-11 flex gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
             <BsQuestionCircle size={18} />
             <span>About</span>
           </div>
+
+          <div onClick={(e) => navHandler(e)} className={`mt-3 h-11 flex bg-linear-to-r from-[#FF8C00] to-[#FF6445] cursor-pointer gap-4 items-center border-2 border-orange-500 px-3 rounded-lg ${darkMode ? "text-white" : "text-gray-800"}`}>
+            <FaUsersGear size={18} />
+            <span>Become Organizer</span>
+          </div>
         </div>
       </div>
+
       <div
         onClick={handleLogout}
         className="flex items-center justify-center gap-3 text-red-500 text-lg mt-8 cursor-pointer"
       >
         <LuLogOut /> <span>Log Out</span>
       </div>
-
       {isProfileOpen && (
         <div
           onClick={() => setIsProfileOpen(false)}
@@ -214,11 +204,7 @@ const Profile = () => {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${
-              darkMode
-                ? "bg-neutral-900 text-white border border-neutral-800"
-                : "bg-white text-gray-800"
-            }`}
+            className={`w-full max-w-md rounded-2xl p-6 shadow-2xl ${darkMode ? "bg-neutral-900 text-white border border-neutral-800" : "bg-white text-gray-800"}`}
           >
             <h2 className="text-[24px] font-bold mb-6 text-center text-orange-500">
               Profil ma'lumotlari
@@ -239,30 +225,82 @@ const Profile = () => {
                 <span className="opacity-70">Telegram ID:</span>
                 <span className="font-medium">{user?.id || "-"}</span>
               </p>
-
               <div>
                 <label className="text-sm opacity-70 block mb-2">
                   Telefon raqamingiz:
                 </label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  placeholder="+998901234567"
-                  className={`w-full px-3 py-2 rounded-lg border-2 outline-none ${
-                    darkMode
-                      ? "bg-neutral-800 border-neutral-700 text-white"
-                      : "bg-gray-50 border-gray-200 text-black"
-                  }`}
-                />
+                {isEditingPhone ? (
+                  <div className="flex gap-2">
+                    <input
+                      type="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="+998901234567"
+                      className={`flex-1 px-3 py-2 rounded-lg border-2 outline-none transition-all ${darkMode
+                        ? "bg-neutral-800 border-neutral-700 text-white focus:border-orange-500"
+                        : "bg-gray-50 border-gray-200 text-black focus:border-orange-500"
+                        }`}
+                    />
+                    <button
+                      onClick={handleSavePhone}
+                      className="px-3 py-2 rounded-lg bg-orange-500 text-white font-medium"
+                    >
+                      Saqlash
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex justify-between items-center">
+                    <span className="font-medium">{phone || "-"}</span>
+                    <button
+                      onClick={() => setIsEditingPhone(true)}
+                      className="px-2 py-1 rounded-lg border border-orange-500 text-orange-500 text-sm"
+                    >
+                      Edit
+                    </button>
+                  </div>
+                )}
+              </div>
+              <div>
+                <label className="text-sm opacity-70 block mb-2">Position:</label>
+                <select
+                  value={position}
+                  onChange={handleChangePosition}
+                  className={`w-full px-3 py-2 rounded-lg border-2 outline-none transition-all ${darkMode
+                    ? "bg-neutral-800 border-neutral-700 text-white focus:border-orange-500"
+                    : "bg-gray-50 border-gray-200 text-black focus:border-orange-500"
+                    }`}
+                >
+                  <option value="Goalkeeper">Goalkeeper</option>
+                  <option value="Defender">Defender</option>
+                  <option value="Mid">Mid</option>
+                  <option value="Forward">Forward</option>
+                </select>
+              </div>
+              <div>
+                <label className="text-sm opacity-70 block mb-2">Nationality:</label>
+                <select
+                  value={nationality}
+                  onChange={handleChangeNationality}
+                  className={`w-full px-3 py-2 rounded-lg border-2 outline-none transition-all ${darkMode
+                    ? "bg-neutral-800 border-neutral-700 text-white focus:border-orange-500"
+                    : "bg-gray-50 border-gray-200 text-black focus:border-orange-500"
+                    }`}
+                >
+                  <option value="-">-</option>
+                  <option value="Uzbekistan">Uzbekistan</option>
+                  <option value="Russia">Russia</option>
+                  <option value="USA">USA</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
             </div>
 
             <button
               onClick={() => setIsProfileOpen(false)}
-              className="mt-8 w-full py-3 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 active:scale-95"
+              className="mt-8 w-full py-3 rounded-xl bg-orange-500 text-white font-bold hover:bg-orange-600 active:scale-95 transition-transform"
             >
-              Yopish va Saqlash
+              Yopish
             </button>
           </div>
         </div>
@@ -271,4 +309,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Player;

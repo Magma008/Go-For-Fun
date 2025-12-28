@@ -29,14 +29,13 @@ const EntryPage = () => {
                         <p className="text-[15px]">Choose your role</p>
                     </div>
                     <div className="buttons w-full flex flex-col items-center gap-7">
-                        <button onClick={(e) => navHandler(e)} className="bg-linear-to-r from-[#FF8C00] to-[#FF6445] rounded-xl w-full p-6 cursor-pointer">
+                        {/* <button onClick={(e) => navHandler(e)} className="bg-linear-to-r from-[#FF8C00] to-[#FF6445] rounded-xl w-full p-6 cursor-pointer">
                             <div className="flex flex-col items-center text-xl">
                                 <FaUsersGear className='text-5xl' />
                                 <p>Organizer</p>
                             </div>
-                        </button>
-                        <button className="bg-[#2C2C2C]/80 rounded-xl w-full p-6 cursor-pointer">
-                            {/* <button onClick={() => navigate("/player-profile")} className="bg-[#2C2C2C]/80 rounded-xl w-full p-6 cursor-pointer"> */}
+                        </button> */}
+                        <button onClick={() => navigate("/player-profile")} className="bg-[#2C2C2C]/80 rounded-xl w-full p-6 cursor-pointer">
                             <div className="flex flex-col items-center text-xl">
                                 <GiSoccerBall className='text-5xl' />
                                 <p>Player</p>
