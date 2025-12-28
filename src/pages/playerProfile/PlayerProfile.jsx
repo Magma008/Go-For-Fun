@@ -76,7 +76,7 @@ const Player = () => {
       style={{ backgroundColor: darkMode ? "#171717" : "#ffffff" }}
     >
       <div className="flex justify-center pt-20 px-4">
-        <div className="w-full max-w-md bg-gradient-to-br from-orange-400 via-orange-500 to-orange-400 rounded-4xl">
+        <div className="w-full max-w-md bg-linear-to-br from-orange-400 via-orange-500 to-orange-400 rounded-4xl">
           <div className="flex items-end justify-center relative -top-14">
             <div className="w-28 h-28 border-4 border-white rounded-full bg-white overflow-hidden">
               {user?.photo ? (

@@ -7,18 +7,18 @@ import { useNavigate } from 'react-router-dom'
 const EntryPage = () => {
     const navigate = useNavigate();
 
-    const navHandler = async (e) => {
-        e.preventDefault();
+    // const navHandler = async (e) => {
+    //     e.preventDefault();
 
-        const data = await JSON.parse(localStorage.getItem("userData"));
+    //     const data = await JSON.parse(localStorage.getItem("userData"));
 
-        if (data) {
-            navigate("/login")
-        } else {
-            navigate("/signup")
-        }
+    //     if (data) {
+    //         navigate("/login")
+    //     } else {
+    //         navigate("/signup")
+    //     }
 
-    }
+    // }
 
     return (
         <div className='min-h-screen bg-center bg-cover bg-no-repeat' style={{ backgroundImage: `url(${bg})` }}>
